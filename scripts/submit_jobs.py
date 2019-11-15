@@ -20,6 +20,14 @@ def get_dataset(name):
         return b2c.parse_process_url('http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=1&re=100&ty=Any&dt=Any&bl=caseB&st=0')
     elif name == 'mc_background':
         return b2c.parse_process_url('http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=1&re=30&ty=Any&dt=Any&bl=caseB&st=0')
+    elif name == 'mc_exp65':
+        return b2c.parse_process_url('http://bweb3.cc.kek.jp/montecarlo.php?ex=65&rs=1&re=25&ty=Any&dt=Any&bl=caseB&st=0')
+    elif name == 'exp65_4S':
+        return b2c.parse_process_url('http://bweb3.cc.kek.jp/mdst.php?ex=65&rs=1&re=100&skm=HadronBorJ&dt=on_resonance&bl=caseB')
+    elif name == 'exp65_1S':
+        return b2c.parse_process_url('http://bweb3.cc.kek.jp/mdst.php?ex=65&rs=1000&re=1050&skm=HadronBorJ&dt=1S_scan&bl=caseB')
+    elif name == 'exp65_cont':
+        return b2c.parse_process_url('http://bweb3.cc.kek.jp/mdst.php?ex=65&rs=0&re=9999&skm=HadronBorJ&dt=continuum&bl=caseB')
     else:
         raise Exception('Dataset not found')
 
