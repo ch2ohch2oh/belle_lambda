@@ -16,22 +16,15 @@ import tqdm
 
 def get_dataset(name):
     """Retrieve list of mdst files based on the name of the dataset"""
-    if name == 'mc_signal':
-        return b2c.parse_process_url('http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=1&re=100&ty=Any&dt=Any&bl=caseB&st=0')
-    elif name == 'mc_background':
-        return b2c.parse_process_url('http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=1&re=30&ty=Any&dt=Any&bl=caseB&st=0')
-    elif name == 'mc_exp65':
-        return b2c.parse_process_url('http://bweb3.cc.kek.jp/montecarlo.php?ex=65&rs=1&re=25&ty=Any&dt=Any&bl=caseB&st=0')
-    elif name == 'exp65_4S':
-        return b2c.parse_process_url('http://bweb3.cc.kek.jp/mdst.php?ex=65&rs=1&re=100&skm=HadronBorJ&dt=on_resonance&bl=caseB')
-    elif name == 'exp65_1S':
-        return b2c.parse_process_url('http://bweb3.cc.kek.jp/mdst.php?ex=65&rs=1000&re=1050&skm=HadronBorJ&dt=1S_scan&bl=caseB')
-    elif name == 'exp65_cont':
-        return b2c.parse_process_url('http://bweb3.cc.kek.jp/mdst.php?ex=65&rs=0&re=9999&skm=HadronBorJ&dt=continuum&bl=caseB')
-    else:
-        raise Exception('Dataset not found')
+    data_dict = {
+        'mc_exp55_50': 'http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=1&re=50&ty=Any&dt=Any&bl=caseB&st=0',
+        'mc_exp55_500': 'http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=1&re=500&ty=Any&dt=Any&bl=caseB&st=0',
+        'mc_exp55_500_1500': 'http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=500&re=1500&ty=Any&dt=Any&bl=caseB&st=0',
+        'data_exp55_100': 'http://bweb3.cc.kek.jp/mdst.php?ex=55&rs=1&re=100&skm=HadronBorJ&dt=Any&bl=caseB'
+    }
+    return b2c.parse_process_url(data_dict[name])
 
-def submit_one(script, mdstpath, outdir):
+def submit_one(script, mdstpath, outdir, b2opt=""):
     """Submit one job for one mdst file"""
 #     print(mdstpath)
     base = os.path.basename(mdstpath)
@@ -39,10 +32,7 @@ def submit_one(script, mdstpath, outdir):
     logname = base + '.log'
     rootpath = os.path.join(outdir, rootname)
     logpath = os.path.join(outdir, logname)
-    os.system(f'bsub -q s -oo {logpath} basf2 {script} {mdstpath} {rootpath} >> /dev/null')
-
-def update_bar(*x):
-    print('Hey there!')
+    os.system(f'bsub -q l -oo {logpath} basf2 {b2opt} {script} {mdstpath} {rootpath} >> /dev/null')
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -80,8 +70,12 @@ if __name__ == '__main__':
         shutil.rmtree(outdir)
         os.mkdir(outdir)
         assert os.path.exists(outdir), "Output directory does not exist!"
+        print(colored('Done', 'green'))
 
     bar = tqdm.tqdm(total = len(dataset))
+    b2opt = ""
+    if args.one == True:
+        b2opt = "-n 1000"
     for mdst in dataset:
-        submit_one(args.script, mdst, args.outdir)
+        submit_one(args.script, mdst, args.outdir, b2opt)
         bar.update()
