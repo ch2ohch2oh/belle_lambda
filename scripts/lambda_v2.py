@@ -12,7 +12,7 @@ def print_env():
     import os
     envlist = ['BELLE2_EXTERNALS_DIR', 'BELLE2_EXTERNALS_SUBSIR',
                'BELLE2_EXTERNALS_OPTION', 'BELLE2_EXTERNALS_VERSION',
-               'BELLE2_LOCAL_DIR', 'BELLE2_OPTION', 
+               'BELLE2_LOCAL_DIR', 'BELLE2_OPTION', 'BELLE2_RELEASE', 
                'BELLE_POSTGRES_SERVER', 'USE_GRAND_REPROCESS_DATA',
                'PANTHER_TABLE_DIR', 'PGUSER']
     print('ENV START'.center(80, '='))
@@ -40,7 +40,7 @@ def reconstructLambda(outlist, match = False, only = None, path = None):
         
     inlist = 'Lambda0:mdst'
     ma.vertexTree(inlist, path = path)
-    if match:
+    if match == True:
         ma.matchMCTruth(inlist, path = path)
         if only == 'signal':
             ma.cutAndCopyList(outlist, inlist, 'isSignal == 1', path = path)
@@ -48,6 +48,8 @@ def reconstructLambda(outlist, match = False, only = None, path = None):
             ma.cutAndCopyList(outlist, inlist, 'isSignal == 0', path = path)
         else:
             ma.cutAndCopyList(outlist, inlist, '', path = path)
+    else:
+        ma.cutAndCopyList(outlist, inlist, '', path = path)
 
 def make_ntuple():
     from variables import variables as va
@@ -81,7 +83,8 @@ if __name__ == '__main__':
     infile, outfile = sys.argv[1], sys.argv[2]
     mypath = b2.create_path()
     b2c.convertBelleMdstToBelleIIMdst(infile, path = mypath)
-    reconstructLambda('Lambda0:belle', match = True, only = 'background', path = mypath)
+    # reconstructLambda('Lambda0:belle', match = True, only = 'background', path = mypath)
+    reconstructLambda('Lambda0:belle', match = True, path = mypath)
     ntuple = make_ntuple()
     ma.variablesToNtuple('Lambda0:belle', ntuple, 'Lambda', outfile, path = mypath)
     
