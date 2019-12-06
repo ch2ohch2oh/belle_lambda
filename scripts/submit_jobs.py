@@ -18,6 +18,7 @@ def get_dataset(name):
     """Retrieve list of mdst files based on the name of the dataset"""
     data_dict = {
         'mc_exp55_50': 'http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=1&re=50&ty=Any&dt=Any&bl=caseB&st=0',
+        'mc_exp55_50_100': 'http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=50&re=150&ty=Any&dt=Any&bl=caseB&st=0',
         'mc_exp55_500': 'http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=1&re=500&ty=Any&dt=Any&bl=caseB&st=0',
         'mc_exp55_500_1500': 'http://bweb3.cc.kek.jp/montecarlo.php?ex=55&rs=500&re=1500&ty=Any&dt=Any&bl=caseB&st=0',
         'data_exp55_100': 'http://bweb3.cc.kek.jp/mdst.php?ex=55&rs=1&re=100&skm=HadronBorJ&dt=Any&bl=caseB'
@@ -32,7 +33,7 @@ def submit_one(script, mdstpath, outdir, b2opt=""):
     logname = base + '.log'
     rootpath = os.path.join(outdir, rootname)
     logpath = os.path.join(outdir, logname)
-    os.system(f'bsub -q l -oo {logpath} basf2 {b2opt} {script} {mdstpath} {rootpath} >> /dev/null')
+    os.system(f'bsub -q s -oo {logpath} basf2 {b2opt} {script} {mdstpath} {rootpath} >> /dev/null')
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
